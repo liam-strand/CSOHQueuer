@@ -1,0 +1,17 @@
+#!/bin/bash
+# 
+# queue
+# 
+# by Liam Strand, November 2021
+# 
+# Adds to the working queue
+# 
+# Usage: ./queue
+# 
+
+USERGROUPS=$(groups)
+
+CLASS=$1
+
+
+python queueBrain.py $USER $CLASS $USERGROUPS 
