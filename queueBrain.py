@@ -95,6 +95,24 @@ def helpStudent(TA, filename):
         
     print("no one needs help!")
 
+
+def updateLine(lineNumber, comment, location, filename):
+
+    with open(filename, "r") as queue:
+        reader = csv.reader(queue, delimiter=" ", quotechar="|", 
+                            quoting=csv.QUOTE_MINIMAL)
+
+        lineNumber = int(lineNumber)
+        i = 0
+        for row in (reader):
+            i += 1
+            if i == lineNumber:
+                studentName = row[0]
+                timestamp = row[3]
+                line = [studentName, comment, location, timestamp]
+                overwrite(line=line, lineNumber=lineNumber, filename=filename)
+
+
 def printQueue(filename):
     """
     Print the entire queue with nice formatting
@@ -155,7 +173,7 @@ class taLoop(cmd.Cmd):
         printQueue(filename=self.file)
 
     def do_add(self, line):
-        "Add a student to the queue \nusage: add [name comment location]"
+        "Add a student to the queue \nusage: add [name, comment, location]"
         if len(line) == 3:
             addToQueue(name=line[0], comment=line[1], 
                        location=line[2], filename=self.file)
@@ -165,6 +183,17 @@ class taLoop(cmd.Cmd):
             location = input("location: ")
             addToQueue(name=student, comment=comment, 
                        location=location, filename=self.file)
+
+    def do_update(self, line):
+        "Update a student's record in the queue \nusage: update <record number>"
+        if len(line) == 1:
+            comment  = input(" comment: ")
+            location = input("location: ")
+            updateLine(lineNumber=line[0], comment=comment, 
+                       location=location, filename=self.file)
+        else:
+            print("usage: update <record number>")
+            
 
     def do_quit(self, line):
         "End the program"
@@ -202,24 +231,3 @@ class studentLoop(cmd.Cmd):
     def do_quit(self, line):
         "End the program"
         return True
-
-def isTA():
-    course = sys.argv[2]
-    for i in range(3, len(sys.argv)):
-        if course in sys.argv[i]:
-            return True
-
-    return False
-
-def main():
-
-    file = f"comp{sys.argv[2]}queue.csv"
-
-    if isTA():
-        taLoop(TA=sys.argv[1], file=file).cmdloop()
-    else:
-        studentLoop(name=sys.argv[1], file=file).cmdloop()
-
-if __name__ == "__main__":
-    main()
-
