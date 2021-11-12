@@ -112,6 +112,23 @@ def updateLine(lineNumber, comment, location, filename):
                 line = [studentName, comment, location, timestamp]
                 overwrite(line=line, lineNumber=lineNumber, filename=filename)
 
+def clearQueue(filename):
+
+    data = []
+
+    with open(filename, "r") as queue:
+        reader = csv.reader(queue, delimiter=" ", quotechar="|", 
+                            quoting=csv.QUOTE_MINIMAL)
+        for row in reader:
+            data.append(row)
+
+    with open(filename, "w") as queue, SoftFileLock(f"{filename}.lock"):
+        writer = csv.writer(queue, delimiter=" ", quotechar="|", 
+                            quoting=csv.QUOTE_MINIMAL)
+
+        for row in data:
+            if row[2] != "done":
+                writer.writerow(row)
 
 def printQueue(filename):
     """
@@ -194,6 +211,11 @@ class taLoop(cmd.Cmd):
         else:
             print("usage: update <record number>")
             
+    def do_clear(self, line):
+        confirmation = input("Are you sure you want to remove all completed records? (y/n) ")
+
+        if confirmation == "y":
+            clearQueue(self.file);
 
     def do_quit(self, line):
         "End the program"

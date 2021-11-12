@@ -2,6 +2,7 @@ import sys
 from queueBrain import taLoop, studentLoop
 
 def isTA():
+    "Determines if the user is a TA. True if so, False if not."
     course = sys.argv[2]
     for i in range(3, len(sys.argv)):
         if course in sys.argv[i]:
