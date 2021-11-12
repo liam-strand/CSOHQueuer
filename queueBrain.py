@@ -39,7 +39,7 @@ def addToQueue(name, comment, location, filename):
         writer.writerow([name, comment, location, 
                          datetime.now().strftime('%m-%d-%Y %H:%M:%S')])
 
-def removeFromQueue(TA, filename):
+def doneStudent(TA, filename):
     """
     Mark that the current student has been helped
     """
@@ -72,7 +72,7 @@ def helpStudent(TA, filename):
             if row[1] == TA and row[2] == "helping":
                 print("You're already helping someone! Do you want to remove them from the queue? (y/n)")
                 if input() == "y":
-                    removeFromQueue(TA= TA, filename= filename)
+                    doneStudent(TA= TA, filename= filename)
                 else:
                     print("Okay, I won't remove them. Please finish with them before helping another student.")
                     return
@@ -246,7 +246,7 @@ class taLoop(cmd.Cmd):
 
     def do_done(self, line):
         "Mark the current student as done"
-        removeFromQueue(TA=self.name, filename=self.file)
+        doneStudent(TA=self.name, filename=self.file)
 
     def do_print(self, line):
         "Print the status of the queue \nusage: print [a n h m d] \n a = all (default), n = need help, h = helping, m = missing, d = done"
@@ -296,6 +296,12 @@ class taLoop(cmd.Cmd):
 
     def do_quit(self, line):
         "End the program"
+        print("Thank you for working the queue!")
+        return True
+
+    def do_EOF(self, line):
+        "End the program"
+        print("\nThank you for working the queue!")
         return True
 
 class studentLoop(cmd.Cmd):
@@ -312,8 +318,12 @@ class studentLoop(cmd.Cmd):
         self.file = file
 
     def do_print(self, line):
-        "Print the status of the queue"
-        printQueue(filename=self.file)
+        "Print the status of the queue \nusage: print [a n h m d] \n a = all (default), n = need help, h = helping, m = missing, d = done"
+
+        if len(line) == 1:
+            printQueue(filename=self.file, key=line[0])
+        else:
+            printQueue(filename=self.file, key="a")
 
     def do_add(self, line):
         "Add yourself to the queue \nusage: add [comment location]"
@@ -333,4 +343,10 @@ class studentLoop(cmd.Cmd):
 
     def do_quit(self, line):
         "End the program"
+        print("Thank you for using the queue!")
+        return True
+
+    def do_EOF(self, line):
+        "End the program"
+        print("\nThank you for using the queue!")
         return True

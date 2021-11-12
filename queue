@@ -13,5 +13,4 @@ USERGROUPS=$(groups)
 
 CLASS=$1
 
-
 python queueDriver.py $USER $CLASS $USERGROUPS 
