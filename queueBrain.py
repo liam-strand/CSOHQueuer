@@ -29,8 +29,6 @@ def overwrite(line, lineNumber, filename):
                 writer.writerow(row)
             counter += 1
 
-
-
 def addToQueue(name, comment, location, filename):
     """
     Add a student to the bottom of the queue
@@ -84,7 +82,8 @@ def helpStudent(TA, filename):
                             quoting=csv.QUOTE_MINIMAL)
 
         for row in reader:
-            if row[2] != "helping" and row[2] != "done" and row[2] != "missing":
+            if row[2] != "helping" and row[2] != "done" \
+                                    and row[2] != "missing":
                 printStudent(student= row)
                 lineNum = reader.line_num
                 row[1] = TA
@@ -93,7 +92,6 @@ def helpStudent(TA, filename):
                 return
         
     print("no one needs help!")
-
 
 def updateLine(lineNumber, comment, location, filename):
 
@@ -112,46 +110,112 @@ def updateLine(lineNumber, comment, location, filename):
                 overwrite(line=line, lineNumber=lineNumber, filename=filename)
 
 def clearQueue(filename):
-
     data = []
 
-    with open(filename, "r") as queue:
-        reader = csv.reader(queue, delimiter=" ", quotechar="|", 
-                            quoting=csv.QUOTE_MINIMAL)
-        for row in reader:
-            data.append(row)
+    with SoftFileLock(f"{filename}.lock"):
 
-    with open(filename, "w") as queue, SoftFileLock(f"{filename}.lock"):
-        writer = csv.writer(queue, delimiter=" ", quotechar="|", 
-                            quoting=csv.QUOTE_MINIMAL)
+        with open(filename, "r") as queue:
+            reader = csv.reader(queue, delimiter=" ", quotechar="|", 
+                                quoting=csv.QUOTE_MINIMAL)
+            for row in reader:
+                data.append(row)
 
-        for row in data:
-            if row[2] != "done":
-                writer.writerow(row)
+        with open(filename, "w") as queue:
+            writer = csv.writer(queue, delimiter=" ", quotechar="|", 
+                                quoting=csv.QUOTE_MINIMAL)
 
-def printQueue(filename):
+            for row in data:
+                if row[2] != "done":
+                    writer.writerow(row)
+
+def removeLine(name, filename):
+    "Remove a student from the queue entirely"
+    data = []
+    
+    with SoftFileLock(f"{filename}.lock"):
+
+        with open(filename, "r") as queue:
+            reader = csv.reader(queue, delimiter=" ", quotechar="|", 
+                                quoting=csv.QUOTE_MINIMAL)
+            for row in reader:
+                data.append(row)
+
+        with open(filename, "w") as queue:
+            writer = csv.writer(queue, delimiter=" ", quotechar="|", 
+                                quoting=csv.QUOTE_MINIMAL)
+
+            for row in data:
+                if not (row[0] == name and row[2] != "helping" 
+                                    and row[2] != "done"):
+                    writer.writerow(row)
+
+def printQueue(filename, key):
     """
     Print the entire queue with nice formatting
     """
 
-    print(f"{filename}:")
-    print("-----------------")
-
     with open(filename, "r") as queue:
         reader = csv.reader(queue, delimiter=" ", quotechar="|", 
                             quoting=csv.QUOTE_MINIMAL)
-
+        
+        blankRow = ["", "", "", ""]
+        i = 0
         for row in reader:
-            if row[2] == "done":
-                print(colored(row, "cyan"))
-            elif row[2] == "helping":
-                print(colored(row, "green"))
-            elif row[2] == "missing":
-                print(colored(row, "yellow"))
+            digit = str(i)
+            chaser = " " * (3 - len(digit))
+            print(digit, end=chaser)
+            i += 1
+            if key == "d":
+                if row[2] == "done":
+                    printRow(row, "cyan")
+                elif row[2] == "helping":
+                    printRow(blankRow, "green")
+                elif row[2] == "missing":
+                    printRow(blankRow, "yellow")
+                else:
+                    printRow(blankRow, "red")
+            elif key == "h":
+                if row[2] == "done":
+                    printRow(blankRow, "cyan")
+                elif row[2] == "helping":
+                    printRow(row, "green")
+                elif row[2] == "missing":
+                    printRow(blankRow, "yellow")
+                else:
+                    printRow(blankRow, "red")
+            elif key == "n":
+                if row[2] == "done":
+                    printRow(blankRow, "cyan")
+                elif row[2] == "helping":
+                    printRow(blankRow, "green")
+                elif row[2] == "missing":
+                    printRow(blankRow, "yellow")
+                else:
+                    printRow(row, "red")
+            elif key == "m":
+                if row[2] == "done":
+                    printRow(blankRow, "cyan")
+                elif row[2] == "helping":
+                    printRow(blankRow, "green")
+                elif row[2] == "missing":
+                    printRow(row, "yellow")
+                else:
+                    printRow(blankRow, "red")
             else:
-                print(colored(row, "red"))
-    
-    print("-----------------")
+                if row[2] == "done":
+                    printRow(row, "cyan")
+                elif row[2] == "helping":
+                    printRow(row, "green")
+                elif row[2] == "missing":
+                    printRow(row, "yellow")
+                else:
+                    printRow(row, "red")
+
+def printRow(row, color):
+    print(colored(f"{(row[0]):>10.10}", color), end="|")
+    print(colored(f"{row[1]:<40.40}", color), end="|")
+    print(colored(f"{row[2]:<10.10}", color), end="|")
+    print(colored(f"{row[3]:<20.20}", color))
 
 def printStudent(student):
     """
@@ -185,8 +249,12 @@ class taLoop(cmd.Cmd):
         removeFromQueue(TA=self.name, filename=self.file)
 
     def do_print(self, line):
-        "Print the status of the queue"
-        printQueue(filename=self.file)
+        "Print the status of the queue \nusage: print [a n h m d] \n a = all (default), n = need help, h = helping, m = missing, d = done"
+
+        if len(line) == 1:
+            printQueue(filename=self.file, key=line[0])
+        else:
+            printQueue(filename=self.file, key="a")
 
     def do_add(self, line):
         "Add a student to the queue \nusage: add [name, comment, location]"
@@ -209,8 +277,18 @@ class taLoop(cmd.Cmd):
                        location=location, filename=self.file)
         else:
             print("usage: update <record number>")
-            
+    
+    def do_remove(self, line):
+        "Remove a student from the queue \nusage: remove <utln>"
+
+        if (len(line) == 1):
+            removeLine(name=line[0], filename=self.file)
+        else:
+            utln = input("utln: ")
+            removeLine(name=utln, filename=self.file)
+
     def do_clear(self, line):
+        "Remove all completed records from queue"
         confirmation = input("Are you sure you want to remove all completed records? (y/n) ")
 
         if confirmation == "y":
@@ -249,6 +327,10 @@ class studentLoop(cmd.Cmd):
             addToQueue(name=self.name, comment=comment,
                        location=location, filename=self.file)
     
+    def do_remove(self, line):
+        "Remove yourself from the queue"
+        removeLine(self.name)
+
     def do_quit(self, line):
         "End the program"
         return True
