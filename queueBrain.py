@@ -1,4 +1,3 @@
-import sys
 import csv
 import cmd
 from datetime import datetime
