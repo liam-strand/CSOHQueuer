@@ -6,7 +6,7 @@
 # 
 # Adds to the working queue
 # 
-# Usage: ./queue
+# Usage: ./queue <comp class number>
 # 
 
 USERGROUPS=$(groups)
