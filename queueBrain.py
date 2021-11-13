@@ -1,5 +1,6 @@
 import csv
 import cmd
+import time
 from datetime import datetime
 from termcolor import colored
 from filelock import SoftFileLock
@@ -21,7 +22,7 @@ def overwrite(line, lineNumber, filename):
         writer = csv.writer(queue, delimiter=" ", quotechar="|", 
                             quoting=csv.QUOTE_MINIMAL)
         
-        counter = 1
+        counter = 0
         for row in queueList:
             if counter == lineNumber:
                 writer.writerow(line)
@@ -49,7 +50,7 @@ def doneStudent(TA, filename):
 
         for row in reader:
             if row[1] == TA and row[2] == "helping":
-                lineNum = reader.line_num
+                lineNum = reader.line_num - 1
                 row[2] = "done"
                 overwrite(line=row, lineNumber=lineNum, filename=filename)
                 return
@@ -85,7 +86,7 @@ def helpStudent(TA, filename):
             if row[2] != "helping" and row[2] != "done" \
                                     and row[2] != "missing":
                 printStudent(student= row)
-                lineNum = reader.line_num
+                lineNum = reader.line_num - 1
                 row[1] = TA
                 row[2] = "helping"
                 overwrite(line=row, lineNumber=lineNum, filename=filename)
@@ -339,7 +340,7 @@ class studentLoop(cmd.Cmd):
     
     def do_remove(self, line):
         "Remove yourself from the queue"
-        removeLine(self.name)
+        removeLine(self.name, self.file)
 
     def do_quit(self, line):
         "End the program"
