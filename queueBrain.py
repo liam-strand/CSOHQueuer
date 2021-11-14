@@ -1,6 +1,5 @@
 import csv
 import cmd
-import time
 from datetime import datetime
 from termcolor import colored
 from filelock import SoftFileLock
@@ -234,7 +233,7 @@ class taLoop(cmd.Cmd):
     """
 
     prompt = "-> "
-    intro = "Welcome to the queue manager!"
+    intro = "Welcome to the queue manager! You have TA perms."
 
     def __init__(self, TA, file):
         super(taLoop, self).__init__()
@@ -311,7 +310,7 @@ class studentLoop(cmd.Cmd):
     """
 
     prompt = "-> "
-    intro = "Welcome to the queue manager!"
+    intro = "Welcome to the queue manager! You have student perms."
 
     def __init__(self, name, file):
         super(studentLoop, self).__init__()
