@@ -212,7 +212,7 @@ def printQueue(filename, key):
                     printRow(row, "red")
 
 def printRow(row, color):
-    print(colored(f"{(row[0]):>10.10}", color), end="|")
+    print(colored(f"{row[0]:>10.10}", color), end="|")
     print(colored(f"{row[1]:<40.40}", color), end="|")
     print(colored(f"{row[2]:<10.10}", color), end="|")
     print(colored(f"{row[3]:<20.20}", color))
