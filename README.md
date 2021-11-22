@@ -10,7 +10,7 @@ ex:
 
     ./queue 11
 
-**Must be run from a terminal `ssh`'d into Halligan!***
+**Must be run from a terminal `ssh`'d into Halligan!**
 
 ## Does the following:
 -  Determines if the user is a TA for the class.
