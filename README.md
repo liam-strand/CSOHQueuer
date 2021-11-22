@@ -21,4 +21,13 @@ ex:
 - Queue is locked while writing so no more than one person can change it at once.
 - Nicely formatted and colorized queue is shown with the `print` command.
 
+## Required Python Libraries:
+- sys
+- os
+- csv
+- cmd
+- datetime
+- termcolor
+- filelock
+
 definitely still a work in progress :)
