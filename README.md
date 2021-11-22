@@ -27,7 +27,7 @@ ex:
 - csv
 - cmd
 - datetime
-- termcolor
-- filelock
+- [termcolor](https://pypi.org/project/termcolor/)
+- [filelock](https://py-filelock.readthedocs.io/en/latest/api.html)
 
 definitely still a work in progress :)
