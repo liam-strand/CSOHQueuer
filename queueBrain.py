@@ -233,7 +233,7 @@ class taLoop(cmd.Cmd):
     """
 
     prompt = "-> "
-    intro = "Welcome to the queue manager! You have TA perms."
+    intro = "Welcome to the queue manager! You are a TA."
 
     def __init__(self, TA, file):
         super(taLoop, self).__init__()
@@ -310,7 +310,7 @@ class studentLoop(cmd.Cmd):
     """
 
     prompt = "-> "
-    intro = "Welcome to the queue manager! You have student perms."
+    intro = "Welcome to the queue manager! You are a student."
 
     def __init__(self, name, file):
         super(studentLoop, self).__init__()

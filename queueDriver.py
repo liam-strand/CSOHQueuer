@@ -12,6 +12,8 @@ def isTA():
 
 def main():
 
+
+
     file = f"comp{sys.argv[2]}queue.csv"
 
     if isTA():
