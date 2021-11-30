@@ -1,3 +1,6 @@
+# CSVs
+*.csv
+
 # VS Code stuff
 .vscode/
 

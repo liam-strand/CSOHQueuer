@@ -1,4 +1,4 @@
-# Halligan Helper 2
+# CSOHQueuer
 
 A utility for managing a queue of hungry hungry students that want to get help from overworked TAs
 
