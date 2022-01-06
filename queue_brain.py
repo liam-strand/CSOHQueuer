@@ -239,7 +239,7 @@ def print_queue(filename, key):
                         print_row(row, "red")
     except FileNotFoundError:
         print("The queue has been cleared and is empty!")
-# small change
+
 
 def print_row(row, color):
     print(colored(f"{row[0]:^10.10}", color), end="|")
