@@ -179,70 +179,72 @@ def print_queue(filename, key):
     """
     Print the entire queue with nice formatting
     """
+    try:
+        with open(filename, "r", encoding="utf-8") as queue:
+            reader = csv.reader(
+                queue, delimiter=" ", quotechar="|", quoting=csv.QUOTE_MINIMAL
+            )
 
-    with open(filename, "r", encoding="utf-8") as queue:
-        reader = csv.reader(
-            queue, delimiter=" ", quotechar="|", quoting=csv.QUOTE_MINIMAL
-        )
-
-        blank_row = ["", "", "", ""]
-        i = 0
-        for row in reader:
-            digit = str(i)
-            chaser = " " * (3 - len(digit))
-            print(digit, end=chaser)
-            i += 1
-            if key == "d":
-                if row[2] == "done":
-                    print_row(row, "cyan")
-                elif row[2] == "helping":
-                    print_row(blank_row, "green")
-                elif row[2] == "missing":
-                    print_row(blank_row, "yellow")
+            blank_row = ["", "", "", ""]
+            i = 0
+            for row in reader:
+                digit = str(i)
+                chaser = " " * (3 - len(digit)) + "|"
+                print(digit, end=chaser)
+                i += 1
+                if key == "d":
+                    if row[2] == "done":
+                        print_row(row, "cyan")
+                    elif row[2] == "helping":
+                        print_row(blank_row, "green")
+                    elif row[2] == "missing":
+                        print_row(blank_row, "yellow")
+                    else:
+                        print_row(blank_row, "red")
+                elif key == "h":
+                    if row[2] == "done":
+                        print_row(blank_row, "cyan")
+                    elif row[2] == "helping":
+                        print_row(row, "green")
+                    elif row[2] == "missing":
+                        print_row(blank_row, "yellow")
+                    else:
+                        print_row(blank_row, "red")
+                elif key == "n":
+                    if row[2] == "done":
+                        print_row(blank_row, "cyan")
+                    elif row[2] == "helping":
+                        print_row(blank_row, "green")
+                    elif row[2] == "missing":
+                        print_row(blank_row, "yellow")
+                    else:
+                        print_row(row, "red")
+                elif key == "m":
+                    if row[2] == "done":
+                        print_row(blank_row, "cyan")
+                    elif row[2] == "helping":
+                        print_row(blank_row, "green")
+                    elif row[2] == "missing":
+                        print_row(row, "yellow")
+                    else:
+                        print_row(blank_row, "red")
                 else:
-                    print_row(blank_row, "red")
-            elif key == "h":
-                if row[2] == "done":
-                    print_row(blank_row, "cyan")
-                elif row[2] == "helping":
-                    print_row(row, "green")
-                elif row[2] == "missing":
-                    print_row(blank_row, "yellow")
-                else:
-                    print_row(blank_row, "red")
-            elif key == "n":
-                if row[2] == "done":
-                    print_row(blank_row, "cyan")
-                elif row[2] == "helping":
-                    print_row(blank_row, "green")
-                elif row[2] == "missing":
-                    print_row(blank_row, "yellow")
-                else:
-                    print_row(row, "red")
-            elif key == "m":
-                if row[2] == "done":
-                    print_row(blank_row, "cyan")
-                elif row[2] == "helping":
-                    print_row(blank_row, "green")
-                elif row[2] == "missing":
-                    print_row(row, "yellow")
-                else:
-                    print_row(blank_row, "red")
-            else:
-                if row[2] == "done":
-                    print_row(row, "cyan")
-                elif row[2] == "helping":
-                    print_row(row, "green")
-                elif row[2] == "missing":
-                    print_row(row, "yellow")
-                else:
-                    print_row(row, "red")
+                    if row[2] == "done":
+                        print_row(row, "cyan")
+                    elif row[2] == "helping":
+                        print_row(row, "green")
+                    elif row[2] == "missing":
+                        print_row(row, "yellow")
+                    else:
+                        print_row(row, "red")
+    except FileNotFoundError:
+        print("The queue has been cleared and is empty!")
 
 
 def print_row(row, color):
-    print(colored(f"{row[0]:>10.10}", color), end="|")
-    print(colored(f"{row[1]:<40.40}", color), end="|")
-    print(colored(f"{row[2]:<10.10}", color), end="|")
+    print(colored(f"{row[0]:^10.10}", color), end="|")
+    print(colored(f"{row[1]:<35.35}", color), end="|")
+    print(colored(f"{row[2]:<9.9}", color), end="|")
     print(colored(f"{row[3]:<20.20}", color))
 
 
