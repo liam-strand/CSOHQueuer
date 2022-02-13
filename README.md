@@ -1,5 +1,5 @@
 # Halligan Helper 2
-
+[![pylint Score](https://mperlet.github.io/pybadge/badges/9.66.svg)](https://github.com/PyCQA/pylint)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A utility for managing a queue of hungry hungry students that want to get help from overworked TAs
